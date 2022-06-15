@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: service-a
+spec:
+  host: service-a.dev.svc.cluster.local
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: service-b
+spec:
+  host: service-b.dev.svc.cluster.local
+  subsets:
+    - name: v1
+      labels:
+        version: v1

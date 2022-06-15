@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  service-a:
+    image: docker.io/janusky/service-a:dev
+    depends_on:
+      - rabbitmq
+    ports:
+      - 8080:8080
+    environment:
+      SERVICE_B_INPUT_URL: 'http://service-b:8080/api/greeting'
+      RABBITMQ_CONN: 'amqp://guest:guest@rabbitmq:5672/'
+  
+  service-b:
+    image: docker.io/janusky/service-b:dev
+    depends_on:
+      - rabbitmq
+      - mongodb
+    environment:
+      RABBITMQ_CONN: 'amqp://guest:guest@rabbitmq'
+      MONGO_CONN: 'mongodb://mongodb:27017/admin'
+
+  mongodb:
+    # image: mongo:4.4.6
+    image: mongo:5.0.2
+    ports:
+      - 27017:27017
+
+  mongo_express:
+    # image: mongo-express:0.54.0
+    image: mongo-express:1.0.0-alpha.4
+    depends_on:
+      - mongodb
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_SERVER: "mongodb"
+
+  rabbitmq:
+    image: rabbitmq:3.8.16-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
